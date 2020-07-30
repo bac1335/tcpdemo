@@ -26,10 +26,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
+        tcpmessagedef.cpp \
         widget.cpp
 
 HEADERS += \
         tcpdef.h \
+        tcpmessagedef.h \
         widget.h
 
 # Default rules for deployment.

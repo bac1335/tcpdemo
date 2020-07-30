@@ -1,6 +1,7 @@
 ﻿#include "widget.h"
 #include <QHostAddress>
-#include "tcpdef.h"
+#include "tcpmessagedef.h"
+using namespace TcpMeaasge;
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -17,7 +18,7 @@ void Widget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     qDebug() << "--->lls<---" << __FUNCTION__  << "cliend_send";
 
-    localMeaasg message;
+    LocalMeaasg message;
     message.data = "123123qwdasdasdqwe21ewads";
     message.head.type = 123;
     message.head.size = message.data.size() + MeaasgeHeadSize;
