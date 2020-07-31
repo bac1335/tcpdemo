@@ -25,19 +25,19 @@ void Widget::mouseDoubleClickEvent(QMouseEvent *event)
 
     TcpMessage msg;
     MeaasgeFromLocalToTcp(message,msg);
-    qDebug() << "--->lls<---" << __FUNCTION__  << "======================" << msg.head.size ;
 
     QByteArray array;
     array.resize(msg.head.size);
     memcpy(array.data(),&msg,msg.head.size);
+    qDebug() << "--->lls<---" << __FUNCTION__  << "======================" <<array;
 
-    m_clientSocket->write(array);
+    m_clientSocket->write(array,array.size());
 }
 
 void Widget::init()
 {
     m_clientSocket = new QTcpSocket(this);
-    m_clientSocket->connectToHost(QHostAddress::LocalHost,1234);
+    m_clientSocket->connectToHost(QHostAddress::LocalHost,12341);
     bool ok = m_clientSocket->waitForConnected(10000);
     qDebug() << "===================================" << ok;
 }

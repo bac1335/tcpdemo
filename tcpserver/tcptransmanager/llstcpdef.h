@@ -7,27 +7,29 @@
 
 namespace  TcpMeaasge{
 
+    /**
+    * @brief  数据头文件，用于检验，校准
+    */
     struct MessageHead{
         signed short size;
         unsigned short type;
     };
 
+    /**
+    * @brief  tcpc传输数据
+    */
     struct TcpMessage{
         MessageHead head;
         char str[MAXSIZE];
     };
 
+    /**
+    * @brief  本地数据
+    */
     struct LocalMeaasg{
         MessageHead head;
         QByteArray data;  //防止char*指向内容被销毁
     };
-
-
-    //应用层传输数据到tcp
-    void MeaasgeFromLocalToTcp(LocalMeaasg& local,TcpMessage& msg);
-
-    //tcp解析数据到应用层
-    void MessageFromTcpToLocal(TcpMessage& msg,LocalMeaasg& local);
 
 }
 

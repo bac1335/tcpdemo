@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include <QTcpServer>
-#include "tcpmessagedef.h"
+#include "llstcpdef.h"
 
+class LLSTcpTransServer;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -13,21 +14,15 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
+
 private:
     void init();
     bool isSocketReadyRead(QTcpSocket* client);
 
-signals:
-    void sigMessage(TcpMeaasge::LocalMeaasg message);
-
-private slots:
-    void onConnect();
-    void onRead();
-    void onMeaasge(TcpMeaasge::LocalMeaasg message);
-
 private:
-    QTcpServer*         m_pTcpServer = nullptr;
-    QList<QTcpSocket*>  m_socketList;
+    LLSTcpTransServer*      m_tcpServer = nullptr;
 
 };
 

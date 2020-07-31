@@ -4,9 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+include($$PWD/tcptransmanager/tcptransmanager.pri)
 
 TARGET = tcpserver
 TEMPLATE = app
@@ -27,11 +29,9 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        tcpmessagedef.cpp
 
 HEADERS += \
         mainwindow.h \
-        tcpmessagedef.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
