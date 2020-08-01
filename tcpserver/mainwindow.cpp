@@ -18,12 +18,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 
     QJsonObject object{{"ad",12},{"ad","ad"}};
 
-
-    LocalMeaasg message;
-    message.data = J(object);
-
-    message.head.size = MeaasgeHeadSize +sizeof (message.data);
-    m_tcpServer->write(message);
+    m_tcpServer->write(object);
 }
 
 void MainWindow::init()

@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-include($$PWD/tcptransmanager/tcptransmanager.pri)
+include($$PWD/../tcptransmanager/tcptransmanager.pri)
 
 TARGET = tcpserver
 TEMPLATE = app

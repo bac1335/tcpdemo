@@ -2,8 +2,8 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include <QTcpSocket>
 
+class LLSTcpTransClient;
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -19,7 +19,7 @@ private:
     void init();
 
 private:
-    QTcpSocket*         m_clientSocket = nullptr;
+    LLSTcpTransClient*         m_clientSocket = nullptr;
 
 };
 

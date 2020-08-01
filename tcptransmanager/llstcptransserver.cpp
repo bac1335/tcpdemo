@@ -20,6 +20,40 @@ void LLSTcpTransServer::bind(QVariant ip, QVariant port)
     connect(m_pTimer,&QTimer::timeout,this,&LLSTcpTransServer::onCheakClient);
 }
 
+void LLSTcpTransServer::write(QString& msg)
+{
+    QByteArray array = msg.toUtf8();
+    TcpMessage message;
+    message.head.type = type_Meaasge;
+    message.head.size = MessageHeadSize + array.size();
+    memcpy(message.str,array.data(),array.size());
+
+    QByteArray sendData;
+    sendData.resize(message.head.size);
+    memcpy(sendData.data(),&message,message.head.size);
+
+    for(int i = 0;i<m_socketList.count();i++){
+        m_socketList.at(i)->write(sendData);
+    }
+}
+
+void LLSTcpTransServer::write(QJsonObject &msg)
+{
+    QByteArray array = J(msg);
+    TcpMessage message;
+    message.head.type = type_Meaasge;
+    message.head.size = MessageHeadSize + array.size();
+    memcpy(message.str,array.data(),array.size());
+
+    QByteArray sendData;
+    sendData.resize(message.head.size);
+    memcpy(sendData.data(),&message,message.head.size);
+
+    for(int i = 0;i<m_socketList.count();i++){
+        m_socketList.at(i)->write(sendData);
+    }
+}
+
 void LLSTcpTransServer::write(LocalMeaasg &message)
 {
     TcpMessage tcpMsg;
@@ -27,7 +61,7 @@ void LLSTcpTransServer::write(LocalMeaasg &message)
 
     QByteArray array;
     array.resize(tcpMsg.head.size);
-    memcpy(array.data(),tcpMsg.str,tcpMsg.head.size);
+    memcpy(array.data(),&tcpMsg,tcpMsg.head.size);
 
     for(int i = 0;i<m_socketList.count();i++){
         m_socketList.at(i)->write(array);
@@ -37,6 +71,7 @@ void LLSTcpTransServer::write(LocalMeaasg &message)
 void LLSTcpTransServer::onNewConnect()
 {
     if(m_pTcpServer->hasPendingConnections()){
+        qDebug() << "===>lls<===" << __FUNCTION__ << "new client";
         QTcpSocket* socket = m_pTcpServer->nextPendingConnection();
         connect(socket,&QTcpSocket::readyRead,this,&LLSTcpTransServer::onReadData);
 
@@ -48,38 +83,17 @@ void LLSTcpTransServer::onNewConnect()
     }
 }
 
-void LLSTcpTransServer::onReadData()
-{
-    qDebug() << "--->lls<---" << __FUNCTION__  << "server_resiver";
-    QTcpSocket* client = qobject_cast<QTcpSocket*>(sender());
-    if(!m_socketList.contains(client)) return;
-    while(true){
-        if(!isSocketReadyRead(client)) break;   //数据不满足，不读取
-
-        TcpMessage readmsg;
-        memset(&readmsg,0,sizeof(readmsg));
-        TcpMessage peekmsg;
-        client->peek((char*)&peekmsg, MeaasgeHeadSize);
-        client->read((char*)&readmsg,peekmsg.head.size);
-
-        LocalMeaasg local;
-
-        MessageFromTcpToLocal(readmsg,local);
-
-        emit sigMessage(local);
-    }
-}
-
 void LLSTcpTransServer::onCheakClient()
 {
-    LocalMeaasg message;
-    QJsonObject object{{QString::number(type_Heartbeat),1 },{QString::number(type_Init),0 },{QString::number(type_Meaasge),"" }};
-    QString beat;
-    fromJson(object,beat);
+    TcpMessage message;
+    memset(message.str,0,sizeof(message.str));
 
-    QByteArray array = beat.toUtf8();
-    message.data = array ;
-    message.head.size = array.size() + MeaasgeHeadSize;
+    message.head.type = type_Heartbeat;
+    message.head.size = MessageHeadSize;
+
+    QByteArray array;
+    array.resize(message.head.size);
+    memcpy(array.data(),&message,message.head.size);
 
     for(int i = 0;i< m_socketList.count();i++){
         QTcpSocket* client = m_socketList.at(i);
@@ -101,17 +115,4 @@ void LLSTcpTransServer::removeClient(QTcpSocket *client)
     if(m_socketList.count() <= 0){
         m_pTimer->stop();
     }
-}
-
-bool LLSTcpTransServer::isSocketReadyRead(QTcpSocket *client)
-{
-    if(client->bytesAvailable() < MeaasgeHeadSize) return false;
-    TcpMessage meaasge;
-    if(MeaasgeHeadSize != client->peek((char*)&meaasge,MeaasgeHeadSize))
-        return false;
-
-    if(client->bytesAvailable() < meaasge.head.size)
-        return false;
-
-    return true;
 }

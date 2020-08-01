@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = tcpClient
 TEMPLATE = app
+include($$PWD/../tcptransmanager/tcptransmanager.pri)
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -26,12 +27,10 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        tcpmessagedef.cpp \
         widget.cpp
 
 HEADERS += \
         tcpdef.h \
-        tcpmessagedef.h \
         widget.h
 
 # Default rules for deployment.

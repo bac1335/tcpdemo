@@ -14,6 +14,10 @@ public:
 
     void bind(QVariant ip,QVariant port);
 
+    void write(QString& msg);
+    void write(QJsonObject& msg);
+
+private:
     void write(LocalMeaasg& message);
 
 private slots:
@@ -21,8 +25,6 @@ private slots:
     * @brief  新客户端接入
     */
     void onNewConnect();
-
-    void onReadData();
     /**
     * @brief  检测客户端是否在线
     */
@@ -31,9 +33,6 @@ private slots:
     * @brief  移除客户端
     */
     void removeClient(QTcpSocket* client);
-
-private:
-    bool isSocketReadyRead(QTcpSocket* client);
 
 private:
     QTcpServer*             m_pTcpServer = nullptr;

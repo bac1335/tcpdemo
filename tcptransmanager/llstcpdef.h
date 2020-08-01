@@ -33,6 +33,6 @@ namespace  TcpMeaasge{
 
 }
 
-#define MeaasgeHeadSize sizeof(MessageHead)
+#define MessageHeadSize sizeof(MessageHead)
 
 #endif // TCPDEF_H

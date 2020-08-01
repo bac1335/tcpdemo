@@ -5,19 +5,17 @@
 #include "llstcpdef.h"
 #include <QJsonObject>
 
-#define D(STRING) QString("%1:%2").arg(QString::number(LLSTransBase::type_Meaasge)).arg(STRING).toUtf8()  //普通数据
-
 #define J(JSONOBJECT)   [=](QJsonObject object)->QByteArray{  \
                         QString disStr;QString str;     \
                         if(LLSTransBase::fromJson(object,str)){     \
                         disStr = str;     \
                         };     \
-                        disStr = QString("%1:%2").arg(QString::number(LLSTransBase::type_Meaasge)).arg(disStr);   \
                         return disStr.toUtf8();     \
                         }(JSONOBJECT);  //jsonObject数据
 
 using namespace TcpMeaasge;
 
+class QTcpSocket;
 class LLSTransBase : public QObject{
     Q_OBJECT
 public:
@@ -45,6 +43,7 @@ protected:
 
 private:
     static QString getValue(QJsonValueRef value);
+    bool isSocketReadyRead(QTcpSocket* client);
 
 signals:
     //解析数据供应用层使用
@@ -52,7 +51,7 @@ signals:
 
 protected slots:
     //数据解析
-    virtual void onReadData() = 0;
+    void onReadData();
 };
 
 #endif // LLSTCPTRANSBASE_H

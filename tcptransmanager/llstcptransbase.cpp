@@ -1,4 +1,6 @@
 ﻿#include "llstcptransbase.h"
+#include <QTcpSocket>
+#include <QDebug>
 
 LLSTransBase::LLSTransBase(QObject *parent):
     QObject (parent)
@@ -85,4 +87,35 @@ QString LLSTransBase::getValue(QJsonValueRef value){
     }
 
     return str;
+}
+
+bool LLSTransBase::isSocketReadyRead(QTcpSocket *client)
+{
+    if(client->bytesAvailable() < MessageHeadSize) return false;
+    TcpMessage meaasge;
+    if(MessageHeadSize != client->peek((char*)&meaasge,MessageHeadSize))
+        return false;
+
+    if(client->bytesAvailable() < meaasge.head.size)
+        return false;
+    return true;
+}
+
+void LLSTransBase::onReadData()
+{
+    QTcpSocket* client = qobject_cast<QTcpSocket*>(sender());
+
+    while(true){
+        if(!isSocketReadyRead(client)) break;   //数据不满足，不读取
+
+        TcpMessage readmsg;
+        memset(&readmsg,0,sizeof(readmsg));
+        TcpMessage peekmsg;
+        client->peek((char*)&peekmsg, MessageHeadSize);
+        client->read((char*)&readmsg,peekmsg.head.size);
+
+        LocalMeaasg local;
+        MessageFromTcpToLocal(readmsg,local);
+        emit sigMessage(local);
+    }
 }
