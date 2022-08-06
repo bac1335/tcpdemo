@@ -1,11 +1,10 @@
 ﻿#ifndef TCPDEF_H
 #define TCPDEF_H
-#define MAXSIZE 1024*8
+#define MAXSIZE 1024*4
 #include <QtGlobal>
 #include <QByteArray>
 
-
-namespace  TcpMeaasge{
+namespace  NetMeaasge{
 
     /**
     * @brief  数据头文件，用于检验，校准
@@ -31,6 +30,13 @@ namespace  TcpMeaasge{
         QByteArray data;  //防止char*指向内容被销毁
     };
 
+    //
+    struct UdpMessage
+    {
+        uint port;
+        QString ip;
+        QByteArray data;  //防止char*指向内容被销毁
+    };
 }
 
 #define MessageHeadSize sizeof(MessageHead)

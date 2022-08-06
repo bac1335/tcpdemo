@@ -3,19 +3,9 @@
 
 #include <QObject>
 #include "llstcpdef.h"
-#include <QJsonObject>
 
-#define J(JSONOBJECT)   [=](QJsonObject object)->QByteArray{  \
-                        QString disStr;QString str;     \
-                        if(LLSTransBase::fromJson(object,str)){     \
-                        disStr = str;     \
-                        };     \
-                        return disStr.toUtf8();     \
-                        }(JSONOBJECT);  //jsonObject数据
-
-using namespace TcpMeaasge;
-
-class QTcpSocket;
+#define PORT 12341
+class QUdpSocket;
 class LLSTransBase : public QObject{
     Q_OBJECT
 public:
@@ -25,33 +15,28 @@ public:
         type_Heartbeat        //心跳数据
     };
 
-    explicit LLSTransBase(QObject* parent = nullptr);
+    explicit LLSTransBase(QObject* parent = 0);
     virtual void bind(QVariant ip,QVariant port) = 0;
-    virtual void write(LocalMeaasg& message) = 0;
-
-    //json数据转为QString数据
-    static bool fromJson(QJsonObject& object,QString& desString);
-    //QString数据转为json数据
-    static bool toJson(QString& str,QJsonObject& jsonObject);
+//    virtual void write(LocalMeaasg& message) = 0;
 
 protected:
     //应用层传输数据到tcp
-    static void MeaasgeFromLocalToTcp(LocalMeaasg& local,TcpMessage& msg);
+    static void MeaasgeFromLocalToTcp(NetMeaasge::LocalMeaasg& local,NetMeaasge::TcpMessage& msg);
 
     //tcp解析数据到应用层
-    static void MessageFromTcpToLocal(TcpMessage& msg,LocalMeaasg& local);
+    static void MessageFromTcpToLocal(NetMeaasge::TcpMessage& msg,NetMeaasge::LocalMeaasg& local);
 
 private:
-    static QString getValue(QJsonValueRef value);
-    bool isSocketReadyRead(QTcpSocket* client);
+    bool isSocketReadyRead(QUdpSocket* client);
 
 signals:
     //解析数据供应用层使用
-    void sigMessage(LocalMeaasg);
+    void sigMessage( const NetMeaasge::UdpMessage& );
 
 protected slots:
     //数据解析
     void onReadData();
 };
+
 
 #endif // LLSTCPTRANSBASE_H

@@ -1,5 +1,0 @@
-debug
-release
-.qmake*
-Makefile*
-tcpClient.pro.*

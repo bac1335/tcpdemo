@@ -21,8 +21,11 @@ private:
     void init();
     bool isSocketReadyRead(QTcpSocket* client);
 
+private slots:
+    void slot_message( const NetMeaasge::UdpMessage& );
+
 private:
-    LLSTcpTransServer*      m_tcpServer = nullptr;
+    LLSTcpTransServer*      m_tcpServer;
 
 };
 

@@ -2,23 +2,18 @@
 #define LLSTCPTRANSSERVER_H
 
 #include "llstcptransbase.h"
-class QTcpServer;
+class QUdpSocket;
 class QTcpSocket;
 class QTimer;
-using namespace  TcpMeaasge;
-
 class LLSTcpTransServer : public LLSTransBase{
     Q_OBJECT
 public:
-    explicit LLSTcpTransServer(QObject* parent = nullptr);
-
-    void bind(QVariant ip,QVariant port);
-
+    explicit LLSTcpTransServer(QObject* parent = 0);
     void write(QString& msg);
-    void write(QJsonObject& msg);
+    virtual void bind(QVariant ip,QVariant port);
 
 private:
-    void write(LocalMeaasg& message);
+    void write( NetMeaasge::LocalMeaasg& message);
 
 private slots:
     /**
@@ -35,9 +30,9 @@ private slots:
     void removeClient(QTcpSocket* client);
 
 private:
-    QTcpServer*             m_pTcpServer = nullptr;
+    QUdpSocket*             m_pUdpServer;
     QList<QTcpSocket*>      m_socketList;
-    QTimer*                 m_pTimer = nullptr;
+    QTimer*                 m_pTimer;
 
 };
 

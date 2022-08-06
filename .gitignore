@@ -1,0 +1,8 @@
+tcpClient/debug
+tcpClient/release
+tcpserver/debug
+tcpserver/release
+tcpClient/Makefile*
+tcpserver/Makefile*
+tcpClient/tcpClient.pro.*
+tcpserver/tcpClient.pro.*

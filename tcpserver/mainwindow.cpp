@@ -16,9 +16,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     qDebug()<<"--->lls<---" << __FUNCTION__;
 
-    QJsonObject object{{"ad",12},{"ad","ad"}};
 
-    m_tcpServer->write(object);
 }
 
 void MainWindow::init()
@@ -27,7 +25,10 @@ void MainWindow::init()
     this->setPalette(QPalette("#242424"));
 
     m_tcpServer = new LLSTcpTransServer(this);
-    m_tcpServer->bind("127.0.0.1",12341);
-
+    connect(m_tcpServer,SIGNAL(sigMessage( const NetMeaasge::UdpMessage& )),this,SLOT(slot_message( const NetMeaasge::UdpMessage& )));
 }
 
+void MainWindow::slot_message( const NetMeaasge::UdpMessage& data )
+{
+    qDebug() << "=======================================" << data.ip << data.port << data.data;
+}
